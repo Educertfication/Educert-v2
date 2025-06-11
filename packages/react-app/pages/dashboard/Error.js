@@ -8,7 +8,6 @@ import {
     ModalCloseButton,
   } from '@chakra-ui/react'
 import Image from 'next/image'
-import padlock from '../../assets/padlock.png'
 import { MdCancel, MdLockOutline} from 'react-icons/md';
 
 

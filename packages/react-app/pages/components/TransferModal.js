@@ -10,7 +10,6 @@ import {
     Input
   } from '@chakra-ui/react'
   import { useRef, useState } from "react";
-  import profile from '../../assets/profile.png'
   import Image from "next/image";
   import { useAccount,useContractWrite, usePrepareContractWrite, } from 'wagmi'
   import childAbi from '../utils/childAccount.json'
@@ -44,7 +43,7 @@ const handleTransfer = () =>{
         <ModalContent  height='250px' >
           <ModalHeader>
                 <div className='flex space-x-4'>
-                    <Image src={profile} alt='profile'/>
+                    <Image src="/profile.png" alt="profile"/>
                     <h1 className='my-[5px]'>{address?.slice(0, 16)}...</h1>
                 </div>
           </ModalHeader>

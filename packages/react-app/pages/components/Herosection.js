@@ -3,11 +3,6 @@ import Slider from "react-slick"
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FaChevronRight, FaChevronLeft} from 'react-icons/fa';
-import image1 from '../../assets/image1.png'
-import image2 from '../../assets/image2.png'
-import image4 from '../../assets/image4.png'
-import image5 from '../../assets/image5.png'
-import image6 from '../../assets/image6.png'
 import { useState, useEffect } from 'react';
 
 
@@ -55,19 +50,19 @@ const Herosection = () => {
         <h1 className="text-[#EEEEF0] font-[900] text-[38px] w-[300px] sm:w-[360px] sm:text-center ">Top picks</h1>
         <Slider {...settings} className='' >
         <div>
-        <Card src={image1} />
+        <Card src="/image1.png" width={347} height={200} />
       </div>
       <div>
-      <Card src={image2} />
+      <Card src="/image2.png" width={347} height={200} />
       </div>
       <div>
-      <Card src={image4} />
+      <Card src="/image4.png" width={347} height={200} />
       </div>
       <div>
-      <Card src={image5} />
+      <Card src="/image5.png" width={347} height={200} />
       </div>
       <div>
-      <Card src={image6} />
+      <Card src="/image6.png" width={347} height={200} />
       </div>
         </Slider>
         

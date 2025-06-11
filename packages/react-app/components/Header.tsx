@@ -2,14 +2,10 @@ import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
-import logo from '../assets/logo.png';
-import topleft from '../assets/topleft.png'
-import leftcorner from '../assets/leftcorner.png';
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useContractRead, useAccount } from 'wagmi'
 import factoryabi from '../pages/utils/factory.json';
-import profile from '../assets/profile.png';
 import { useRouter } from 'next/router';
 import Loading from '../pages/components/Loading'
 
@@ -85,15 +81,15 @@ export default function Header(prop : any) {
                   </Disclosure.Button> */}
                 </div>
                 <div className="absolute xxl:h-[100px] xxl:w-[754px]">
-                  <Image src={topleft} alt="topleft" className=" opacity-10 z-0" id='verify'/>
+                  <Image src="/topleft.png" alt="topleft" width={100} height={100} className=" opacity-10 z-0" id='verify'/>
                 </div>
                 <div className="absolute top-28 xxl:h-[100px] xxl:w-[754px]">
-                  <Image src={leftcorner} alt="topleft" className=" opacity-10 z-0 "/>
+                  <Image src="/leftcorner.png" alt="topleft" width={100} height={100} className=" opacity-10 z-0 "/>
                 </div>
               
                 <div className="flex flex-1 items-center sm:items-stretch sm:justify-start space-x-8 relative z-10">
                   <div className="flex flex-shrink-0 items-center space-x-2">
-                    <Image className="block sm:block lg:block" src={logo} width="45" alt="educert Logo" />
+                    <Image className="block sm:block lg:block" src="/logo.png" width={45} height={45} alt="educert Logo" />
                     <h1 className="text-[30px] font-[700] text-[#FFFFFF] satoshi">Edu<span className="text-[#EC27B6]">Cert</span></h1>
                   </div>
                   {!prop.status && <Link href='/'><h1 className="text-[#FFFFFF] satoshi">Home</h1></Link>}
@@ -106,7 +102,7 @@ export default function Header(prop : any) {
                   </Link>
                   <Link href="#Aboutus"><h1 className=" sm:hidden relative z-10 text-[14px] xxl:text-[18px] xxl:w-[350] font-[400] h-[20px] xl:w-[89px] text-[#EEEEF0] satoshi">About Us</h1></Link>
                   </>}
-                {!prop.status && <Image src={profile} alt='profile' onClick={handlepop} className="relative z-10 cursor-pointer" />}
+                {!prop.status && <Image src="/profile.png" alt='profile' width={32} height={32} onClick={handlepop} className="relative z-10 cursor-pointer" />}
                 <div className="relative z-10">
                 <ConnectButton chainStatus="none"  showBalance={{smallScreen: true, largeScreen: false}}/>
                 </div>

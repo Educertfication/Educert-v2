@@ -1,6 +1,5 @@
 import Title from './components/Title';
 import InputTab from './components/InputTab';
-import world from '../assets/world.png';
 import Image from "next/image";
 import Creataccount from './components/Createaccount';
 import Aboutsection from './components/Aboutsection';
@@ -29,7 +28,7 @@ export default function Home() {
         <InputTab />
         </div>
         <div className='absolute top-[-2%] left-[4%] w-full right-20 sm:hidden'>
-            <Image src={world} alt='world' className='w-full' />
+            <Image src="/world.png" alt='world' width={1200} height={600} className='w-full' />
           </div>
           <div className='sm:hidden absolute top-[10%]'>
           <Box

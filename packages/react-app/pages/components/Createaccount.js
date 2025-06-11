@@ -1,9 +1,5 @@
 import { Input, Button } from '@chakra-ui/react'
 import Image from "next/image";
-import metallic from '../../assets/metallic.png'
-import mark from '../../assets/mark.png'
-import ellipse1 from '../../assets/Ellipse1.png'
-import ellipse2 from '../../assets/Ellipse2.png'
 import { useContractWrite, usePrepareContractWrite, useContractRead, useAccount } from 'wagmi'
 import factoryabi from '../utils/factory.json';
 import { useState, useEffect } from 'react';
@@ -89,30 +85,30 @@ const Createaccount = (prop) => {
                            <div className='xxl:w-[750px] xl:w-[650px] sm:hidden'>
                                       <div className='absolute xxl:right-[100px] xl:right-[70px] xxl:top-[1200px] xxl:w-[100px] xl:w-[100px]'>
                                       <div className='xxl:w-[100px] flex justify-end'>
-                                            <Image src={ellipse2} alt='el1'/>
+                                            <Image src="/ellipse2.png" alt='el1' width={100} height={100}/>
                                       </div>
-                                            <Image src={ellipse1} alt='el1' />
+                                            <Image src="/ellipse1.png" alt='el1' width={100} height={100} />
                                         </div>
                                 <div className='xxl:w-[279px] rounded-[14px] xl:w-[270px] xxl:h-[48px] xl:h-[40px] bg-[#FCFCFC3B] px-[10px] py-[10px] xxl:ml-[100px] xl:ml-[80px]'>
                                     <div className='flex space-x-3'>
-                                        <Image src={mark} alt='mark' />
+                                        <Image src="/mark.png" alt='mark' width={40} height={40} />
                                         <p className='text-[14px] font-[400] satoshi text-[#FFFFFF]'>Your account has been created</p>
                                     </div>
                                 </div>
 
                                 <div className='xxl:w-[600px] flex justify-center mx-auto '>
-                                    <Image src={metallic} alt='metallic' />
+                                    <Image src="/metallic.png" alt='metallic' width={120} height={60} />
                                 </div>
                                 <div className='absolute xxl:left-[650px] xl:left-[500px] xxl:top-[1550px] xxl:bottom-[15px] xxl:w-[100px] xl:w-[100px]'>
                                       <div className='xxl:w-[100px] flex justify-end'>
-                                            <Image src={ellipse1} alt='el1' />
+                                            <Image src="/ellipse1.png" alt='el1' width={100} height={100} />
                                       </div>
-                                            <Image src={ellipse2} alt='el1'/>
+                                            <Image src="/ellipse2.png" alt='el1' width={100} height={100}/>
                                         </div>
                             <div className='flex justify-end'>
                                 <div className='xxl:w-[279px] rounded-[14px] xl:w-[270px] xxl:h-[48px] xl:h-[40px] bg-[#FCFCFC3B] px-[10px] py-[10px]' >
                                      <div className='flex space-x-3'>
-                                        <Image src={mark} alt='mark' />
+                                        <Image src="/mark.png" alt='mark' width={40} height={40} />
                                         <p className='text-[14px] font-[400] satoshi text-[#FFFFFF]'>Your Course has been created</p>
                                     </div>
                                 </div>
