@@ -1,142 +1,114 @@
-# EduCert - Certificate Verification Platform
+# 🎓 EduCert - Certificate Verification Platform
 
-A decentralized platform for issuing and verifying certificates on the Celo blockchain.
+A **decentralized platform** for issuing and verifying **non-transferable digital certificates** on the **Celo blockchain**. EduCert empowers educational institutions, event organizers, and online platforms to securely issue tamper-proof certificates, while allowing anyone to verify authenticity transparently.
 
-## Features
+> ✅ Powered by Celo | 🛡️ Secured by Smart Contracts | 🔍 Transparent & Verifiable
 
-- Anyone can create an account
-- Each address can only create one account
-- Certificate issuance and verification
-- Role-based access control
-- Non-transferable certificates
+---
 
-## Smart Contracts
+## 🔑 Core Features
 
-### AccountFactory Contract
-- Allows anyone to create an account
-- Manages account creation and status
-- Stores account details (name, role, creation time)
-- Owner can deactivate/reactivate accounts
+* **Account Management**
 
-### Certificate Contract
-- ERC1155-based certificate tokens
-- Non-transferable certificates
-- Only authorized accounts can mint/burn certificates
+  * Anyone can create an account (on the mvp, anyone can create an organization account, in the road map, organization will undergo verification and approval workflow)
+  * Each wallet address can only register an org once
+  * Account creation, status management, and role assignment
 
-### UserAccount Contract
-- **Network**: Celo Alfajores Testnet
-- **Contract Address**: `0x6CFAB81a5992e057038aa3Eb95908Bb41F6e9891`
-- **Deployer**: `0x62Bc8aE3c235dEd14Ebf9Fe8F72e827204c4EFE4`
-- **Verification**: [View on Blockscout](https://celo-alfajores.blockscout.com/address/0x6CFAB81a5992e057038aa3Eb95908Bb41F6e9891#code)
+* **Certificate Issuance & Verification**
 
-## Contract Deployments
+  * Mint and assign **non-transferable ERC1155 certificates**
+  * Public, on-chain verification of certificate authenticity
+  * Role-based permission to issue/burn certificates
 
-### Certificate Contract
-- **Network**: Celo Alfajores Testnet
-- **Contract Address**: `0x73bb8f35F79e7472Af9E5657e8DCD15b22E8B7C6`
-- **Deployer**: `0x62Bc8aE3c235dEd14Ebf9Fe8F72e827204c4EFE4`
-- **Verification**: [View on Blockscout](https://celo-alfajores.blockscout.com/address/0x73bb8f35F79e7472Af9E5657e8DCD15b22E8B7C6#code)
+* **Role-Based Access Control**
 
-### AccountFactory Contract
-- **Network**: Celo Alfajores Testnet
-- **Contract Address**: `0x504195e2a73A2Cd0f3c691e49ADC93E509cFdA79`
-- **Deployer**: `0x62Bc8aE3c235dEd14Ebf9Fe8F72e827204c4EFE4`
-- **Verification**: [View on Blockscout](https://celo-alfajores.blockscout.com/address/0x504195e2a73A2Cd0f3c691e49ADC93E509cFdA79#code)
+  * Admins, institutions, and regular users have distinct privileges
+  * Fine-grained control over who can issue and revoke certificates
 
-## Deployment
+* **On-Chain Transparency**
 
-### Prerequisites
-- Node.js and Yarn
-- A wallet with CELO tokens for deployment
-- Private key for deployment
+  * Certificate metadata and records stored on-chain
+  * Easy integration with external verification tools
 
-### Environment Setup
-1. Create a `.env` file in the `packages/hardhat` directory:
-```
-PRIVATE_KEY=your_private_key_here
-```
+---
 
-### Deployment Steps
+## 🧠 Smart Contract Architecture
 
-1. Install dependencies:
-```bash
-yarn install
-```
+### 🏭 `AccountFactory` Contract
 
-2. Deploy contracts to Celo Alfajores testnet:
-```bash
-cd packages/hardhat
-yarn hardhat run scripts/deploy-factory.js --network celo-alfajores
-```
+* Facilitates account creation
+* Maintains a registry of user profiles with:
 
-3. After deployment, you'll get:
-- Certificate Contract: `0x73bb8f35F79e7472Af9E5657e8DCD15b22E8B7C6`
-- AccountFactory Contract: `0x504195e2a73A2Cd0f3c691e49ADC93E509cFdA79`
+  * Name, role, and creation timestamp
+* Allows owner to **deactivate/reactivate** accounts
 
-### Creating an Account
+### 🧾 `Certificate` Contract
 
-Anyone can create an account by calling the `createAccount` function:
-```solidity
-function createAccount(string memory _name, string memory _role) external
-```
+* ERC1155 standard-based implementation
+* Certificates are **non-transferable**
+* Only authorized accounts can:
 
-Parameters:
-- `_name`: The name of the account holder
-- `_role`: The role assigned to the account
+  * Mint new certificates
+  * Burn/revoke existing certificates
 
-Example using ethers.js:
-```javascript
-const factory = new ethers.Contract(factoryAddress, factoryABI, signer);
-await factory.createAccount("John Doe", "Student");
-```
+### 👤 `UserAccount` Contract
 
-### Account Management
+* Represents individual user data
+* Stores information needed to verify account activity
 
-1. Check Account Status:
-```solidity
-function getAccountDetails(address _account) external view returns (
-    bool isActive,
-    string memory name,
-    string memory role,
-    uint256 createdAt
-)
-```
+---
 
-2. Deactivate Account (Owner only):
-```solidity
-function deactivateAccount(address _account) external onlyOwner
-```
+## 🌐 Network & Deployment Details
 
-3. Reactivate Account (Owner only):
-```solidity
-function reactivateAccount(address _account) external onlyOwner
-```
+| Contract       | Network                | Address                                                                                                                                        |
+| -------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| AccountFactory | Celo Alfajores Testnet | `0x504195e2a73A2Cd0f3c691e49ADC93E509cFdA79` [🔗 Blockscout](https://alfajores.celoscan.io/address/0x504195e2a73A2Cd0f3c691e49ADC93E509cFdA79) |
+| Certificate    | Celo Alfajores Testnet | `0x73bb8f35F79e7472Af9E5657e8DCD15b22E8B7C6` [🔗 Blockscout](https://alfajores.celoscan.io/address/0x73bb8f35F79e7472Af9E5657e8DCD15b22E8B7C6) |                                                                                                  |
 
-## Development
+---
 
-### Local Development
-1. Start local blockchain:
-```bash
-yarn hardhat node
-```
+## 🚀 Roadmap
 
-2. Deploy to local network:
-```bash
-yarn hardhat run scripts/deploy-factory.js --network localhost
-```
+### ✅ Completed
 
-### Testing
-```bash
-yarn hardhat test
-```
+* [x] Deploy core contracts to Alfajores testnet
+* [x] Implement role-based certificate issuance
+* [x] Non-transferable ERC1155 design
+* [x] Account creation & validation
+* [x] Public on-chain certificate verification
 
-## Security
+### 🔜 In Progress / Coming Soon
 
-- Only authorized accounts can mint/burn certificates
-- Owner can manage account status
-- Non-transferable certificates
-- Input validation for all functions
+* [ ] 🌐 **Frontend Web App**
 
-## License
+  * Intuitive dashboard for issuers and recipients
+  * QR code generation for verifying certificates
+* [ ] 🧾 **Custom Metadata Support**
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+  * Include course title, date, instructor, and unique serial ID
+* [ ] 🧩 **IPFS Integration**
+
+  * Store supporting documents and images off-chain via IPFS
+* [ ] 🔐 **ZK Verification Module**
+
+  * Private verifications using zero-knowledge proofs
+
+### 📅 Planned Features
+
+* [ ] 🧑‍🎓 **Student Profile Pages**
+
+  * Showcase earned certificates and badges
+* [ ] 🏫 **Institution Onboarding Workflow**
+
+  * Apply and get verified as an educational provider
+* [ ] 🪪 **NFT Credential Badge System**
+
+  * Gamified non-transferable badges for bootcamps, hackathons, etc.
+* [ ] 📊 **Analytics Dashboard**
+
+  * Track certificate issuance statistics
+* [ ] 🤝 **Integration with Learning Platforms**
+
+  * Plug-and-play module for online course providers like Moodle, Google Classroom
+
+---
