@@ -1,0 +1,49 @@
+{
+    "name": "hack",
+    "version": "1.0.0",
+    "description": "Custom Celo Composer project.",
+    "private": true,
+    "author": "Celo",
+    "license": "MIT",
+    "scripts": {
+        "react-app:dev": "yarn workspace react-app dev",
+        "react-app:build": "yarn workspace react-app build",
+        "build-ui": "yarn workspace react-app build",
+        "react-app:start": "yarn workspace react-app start",
+        "react-app:lint": "yarn workspace react-app lint",
+        "hardhat:test": "yarn workspace hardhat test",
+        "hardhat:test-local": "yarn workspace hardhat test-local",
+        "hardhat:create-account": "yarn workspace hardhat create-account",
+        "hardhat:accounts": "yarn workspace hardhat accounts",
+        "hardhat:devchain": "yarn workspace hardhat devchain",
+        "hardhat:deploy": "yarn workspace hardhat deploy",
+        "hardhat:deploy-reset-watch": "yarn workspace hardhat deploy-reset-watch",
+        "hardhat:watch": "yarn workspace hardhat watch",
+        "hardhat:fork-mainnet": "yarn workspace hardhat fork-mainnet"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/celo-org/celo-composer.git"
+    },
+    "bugs": {
+        "url": "https://github.com/celo-org/celo-composer/issues"
+    },
+    "homepage": "https://github.com/celo-org/celo-composer/blob/main/README.md",
+    "workspaces": [
+        "packages/*"
+    ],
+    "keywords": [
+        "celo-composer",
+        "celo"
+    ],
+    "dependencies": {
+        "@netlify/plugin-nextjs": "^4.40.0",
+        "@typescript-eslint/parser": "^5.62.0",
+        "react-icons": "^4.10.1",
+        "react-slick": "^0.29.0",
+        "slick-carousel": "^1.8.1"
+    },
+    "devDependencies": {
+        "@types/react-slick": "^0.23.10"
+    }
+}
