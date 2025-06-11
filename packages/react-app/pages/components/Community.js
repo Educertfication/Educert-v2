@@ -6,7 +6,7 @@ const Community = () => {
     <div className="w-[1128px] sm:w-[370px] xsm:w-[330px] h-[426px] border-t rounded-t-[32px]  xxl:mx-auto xl:mx-auto mt-[120px] sm:mt-[100px] " style={{background : "linear-gradient(180deg, #2B243C 0%, #0B031E 100%)", borderRightColor: "linear-gradient(180deg, #EEEEF0 0%, rgba(238, 238, 240, 0) 100%)"}}>
         <div>
                   <div className="flex items-center space-x-2 w-[133px] mx-auto mt-4">
-                    <Image className="" src="/logo.png" width={33} height={45} alt="educert Logo" />
+                    <Image className="" src="/logo.png" width={33} height={45} alt="educert Logo" unoptimized />
                     <h1 className="text-[21px] font-[700] text-[#FFFFFF] satoshi">Edu<span className="text-[#EC27B6]">Cert</span></h1>
                   </div>
 

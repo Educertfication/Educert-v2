@@ -28,7 +28,7 @@ export default function Home() {
         <InputTab />
         </div>
         <div className='absolute top-[-2%] left-[4%] w-full right-20 sm:hidden'>
-            <Image src="/world.png" alt='world' width={1200} height={600} className='w-full' />
+            <Image src="/world.png" alt='world' width={1200} height={600} className='w-full' unoptimized />
           </div>
           <div className='sm:hidden absolute top-[10%]'>
           <Box

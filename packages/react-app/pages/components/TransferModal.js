@@ -43,7 +43,7 @@ const handleTransfer = () =>{
         <ModalContent  height='250px' >
           <ModalHeader>
                 <div className='flex space-x-4'>
-                    <Image src="/profile.png" alt="profile"/>
+                    <Image src="/profile.png" alt="profile" width={32} height={32} unoptimized />
                     <h1 className='my-[5px]'>{address?.slice(0, 16)}...</h1>
                 </div>
           </ModalHeader>
