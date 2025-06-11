@@ -2,77 +2,58 @@
 pragma solidity ^0.8.0;
 
 import "./UserAccount.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
 
-interface ICertificate {
-    function initializeFactory(address _factoryAddress) external;
-}
+contract AccountFactory {
+    struct accounts{
+        string _name;
+        address accountAddress;
+        uint certificateID;
+    }
+    address public owner;
+    accounts[] Accounts;
+    bool paused;
+    mapping(address => address) SingleAccountAddress;
+    mapping(address => bool) public accountStatus;
+    mapping(address => bool) contractAccountStatus;
+    uint certificateIDs;
+    address public NftAddress;
 
-contract AccountFactory is Ownable {
-    using Address for address;
-
-    struct Account {
-        bool isActive;
-        string name;
-        string role;
-        uint256 createdAt;
+    event accountCreated(string _name, address _accountAddress, uint certID);
+    constructor(address _nftAddress) {
+        owner = msg.sender;
+        certificateIDs = 1;
+        NftAddress = _nftAddress;
     }
 
-    mapping(address => Account) public accounts;
-    mapping(address => bool) public isAccountContract;
-    address public certificateContract;
-
-    event AccountCreated(address indexed account, string name, string role);
-    event AccountDeactivated(address indexed account);
-    event AccountReactivated(address indexed account);
-    event CertificateContractSet(address indexed certificateContract);
-
-    constructor(address initialOwner) Ownable(initialOwner) {}
-
-    function setCertificateContract(address _certificateContract) external onlyOwner {
-        require(_certificateContract != address(0), "Invalid certificate contract address");
-        certificateContract = _certificateContract;
-        emit CertificateContractSet(_certificateContract);
+    function CreateAccount(string memory name_, uint _duration) external {
+        require(paused == false, 'Paused');
+        require(accountStatus[msg.sender] == false, 'existing account');
+        UserAccount account = new UserAccount(name_, msg.sender, _duration,certificateIDs, NftAddress, msg.sender);
+        Accounts.push(accounts(name_, address(account), certificateIDs ));
+        SingleAccountAddress[msg.sender] = address(account);
+        accountStatus[msg.sender] = true;
+        contractAccountStatus[address(account)] = true;
+        emit accountCreated(name_,address(account), certificateIDs);
+        certificateIDs++;
     }
-
-    // Modified to allow anyone to create their own account
-    function createAccount(string memory _name, string memory _role) external {
-        require(!accounts[msg.sender].isActive, "Account already exists");
-        
-        accounts[msg.sender] = Account({
-            isActive: true,
-            name: _name,
-            role: _role,
-            createdAt: block.timestamp
-        });
-
-        emit AccountCreated(msg.sender, _name, _role);
+    function pause() external{
+        require(msg.sender == owner, 'Not authorized');
+        paused = true;
     }
-
-    function deactivateAccount(address _account) external onlyOwner {
-        require(accounts[_account].isActive, "Account not active");
-        accounts[_account].isActive = false;
-        emit AccountDeactivated(_account);
+    function unpause() external {
+        require(msg.sender == owner);
+        paused = false;
     }
-
-    function reactivateAccount(address _account) external onlyOwner {
-        require(!accounts[_account].isActive, "Account already active");
-        accounts[_account].isActive = true;
-        emit AccountReactivated(_account);
+    function AllAccounts() public view returns(accounts[] memory) {
+        return Accounts;
     }
-
-    function AccountcontractState(address _account) external view returns (bool) {
-        return accounts[_account].isActive;
+    function SingleAccount(address account) public view returns (address) {
+        return SingleAccountAddress[account];
     }
-
-    function getAccountDetails(address _account) external view returns (
-        bool isActive,
-        string memory name,
-        string memory role,
-        uint256 createdAt
-    ) {
-        Account memory account = accounts[_account];
-        return (account.isActive, account.name, account.role, account.createdAt);
+    function CreationStatus(address account) public view returns (bool) {
+        return accountStatus[account];
+    }
+    function AccountcontractState(address contractAccount) external view returns(bool) {
+        return contractAccountStatus[contractAccount];
     }
 }

@@ -39,9 +39,9 @@ A decentralized platform for issuing and verifying certificates on the Celo bloc
 
 ### AccountFactory Contract
 - **Network**: Celo Alfajores Testnet
-- **Contract Address**: `0x71EC8Ff6E2C874c1E149975512C81Fdcf4326bBC`
+- **Contract Address**: `0x504195e2a73A2Cd0f3c691e49ADC93E509cFdA79`
 - **Deployer**: `0x62Bc8aE3c235dEd14Ebf9Fe8F72e827204c4EFE4`
-- **Verification**: [View on Blockscout](https://celo-alfajores.blockscout.com/address/0x71EC8Ff6E2C874c1E149975512C81Fdcf4326bBC#code)
+- **Verification**: [View on Blockscout](https://celo-alfajores.blockscout.com/address/0x504195e2a73A2Cd0f3c691e49ADC93E509cFdA79#code)
 
 ## Deployment
 
@@ -71,7 +71,7 @@ yarn hardhat run scripts/deploy-factory.js --network celo-alfajores
 
 3. After deployment, you'll get:
 - Certificate Contract: `0x73bb8f35F79e7472Af9E5657e8DCD15b22E8B7C6`
-- AccountFactory Contract: `0x71EC8Ff6E2C874c1E149975512C81Fdcf4326bBC`
+- AccountFactory Contract: `0x504195e2a73A2Cd0f3c691e49ADC93E509cFdA79`
 
 ### Creating an Account
 

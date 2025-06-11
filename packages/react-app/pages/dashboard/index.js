@@ -44,7 +44,7 @@ export const Dashboard = () => {
         address: childContractAddr,
         abi: childAbi,
         functionName: 'AppendSignature',
-        args : [signature, walletAddress, 1722787680],
+        args : [signature, walletAddress, 1849645008],
       })
       const { data, isLoading, isSuccess, write : callMint } = useContractWrite(MintConfig)
   
@@ -135,7 +135,7 @@ export const Dashboard = () => {
             recipient : walletAddress,
             certificateID : Number(childContractID),
             nonce : Number(childContractNonce), 
-            deadline : 1722787680,
+            deadline : 1849645008,
         },
     };
     
@@ -276,7 +276,7 @@ export const Dashboard = () => {
                     <RevokeModal open={isOpentwo} close={Onclosetwo} address={childContractAddr}/>
           {isSign && <div className='space-y-6 mt-[70px] w-[1050px] text-center' >
             <Input type='text' id='walletInput' placeholder='Wallet address' style={{ width: '724px', height: '56px', borderRadius: '12px'}} className='bg-[#D4D4D43B] satoshi mx-auto  text-[18px] xl:text-[14px] text-black px-[20px]' value={walletAddress} onChange={handleWalletInput} />
-            <Input type='number' id='expiry' placeholder='Expiry period : 1722787680' style={{ width: '724px', height: '56px', borderRadius: '12px'}} className='bg-[#D4D4D43B] satoshi mx-auto text-[18px] xl:text-[14px] text-black px-[20px]' value='1722787680' />
+            <Input type='number' id='expiry' placeholder='Expiry period : 1849645008' style={{ width: '724px', height: '56px', borderRadius: '12px'}} className='bg-[#D4D4D43B] satoshi mx-auto text-[18px] xl:text-[14px] text-black px-[20px]' value='1849645008' />
             <div className='flex space-x-3 text-[#13042585] text-[14px] w-[724px] justify-start mt-[10px] mx-auto'>
                 <AiOutlineInfoCircle className='w-[18px] h-[18px]' />
                 <p>Please note: The expiry period applies only before mint</p>
@@ -293,7 +293,7 @@ export const Dashboard = () => {
                 <p>Please note: the wallet address and Expiry period credentials must match the previous screen</p>
             </div>
             <Input type='text' id='walletInput' placeholder='Wallet address' style={{ width: '724px', height: '56px', borderRadius: '12px'}} className='bg-[#D4D4D43B] satoshi mx-auto  text-[18px] xl:text-[14px] text-black px-[20px]'  value={walletAddress} onChange={handleWalletInput} />
-            <Input type='text' id='expiry' placeholder='Expiry period : 1722787680' style={{ width: '724px', height: '56px', borderRadius: '12px'}} className='bg-[#D4D4D43B] satoshi mx-auto  text-[18px] xl:text-[14px] text-black px-[20px]' value='1722787680'  />
+            <Input type='text' id='expiry' placeholder='Expiry period : 1849645008' style={{ width: '724px', height: '56px', borderRadius: '12px'}} className='bg-[#D4D4D43B] satoshi mx-auto  text-[18px] xl:text-[14px] text-black px-[20px]' value='1849645008'  />
 
             <div className='w-[1050px] flex justify-end px-[30px] mt-[250px]'>
             <Button style={{background: '#130425', color: '#EEEEF0'}} className='xxl:w-[259px] xl:w-[200px] text-[18px] xxl:h-[39px] rounded-[8px]  px-[24px] py-[16px] xl:text-[14px]' onClick={handleMint}>Mint certificate</Button>

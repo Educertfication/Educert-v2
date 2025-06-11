@@ -22,7 +22,7 @@ export default function Header(prop : any) {
 
   const {address} = useAccount()
   const { data: creationStatData, isError, isLoading, isFetched } = useContractRead({
-    address: '0x71EC8Ff6E2C874c1E149975512C81Fdcf4326bBC',
+    address: '0x504195e2a73A2Cd0f3c691e49ADC93E509cFdA79',
     abi: factoryabi,
     functionName: 'CreationStatus',
     args: [address],

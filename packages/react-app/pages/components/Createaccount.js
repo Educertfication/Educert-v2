@@ -27,7 +27,7 @@ const Createaccount = (prop) => {
 
     const {address} = useAccount()
     const { data: creationStatData, isError, isLoading: createStatLoading, isFetched } = useContractRead({
-      address: '0x71EC8Ff6E2C874c1E149975512C81Fdcf4326bBC',
+      address: '0x504195e2a73A2Cd0f3c691e49ADC93E509cFdA79',
       abi: factoryabi,
       functionName: 'CreationStatus',
       args: [address],
@@ -36,10 +36,10 @@ const Createaccount = (prop) => {
     
 
     const { config: creatAccountConfig } = usePrepareContractWrite({
-        address: '0x71EC8Ff6E2C874c1E149975512C81Fdcf4326bBC',
+        address: '0x504195e2a73A2Cd0f3c691e49ADC93E509cFdA79',
         abi: factoryabi,
-        functionName: 'createAccount',
-        args : [institutionName, "Institution"],
+        functionName: 'CreateAccount',
+        args : [institutionName, duration],
       })
       const { data, isLoading, isError:createError, isSuccess, write : callCreate } = useContractWrite(creatAccountConfig)
 
@@ -81,7 +81,7 @@ const Createaccount = (prop) => {
                 <div className="flex mt-[50px] justify-between ">
                            <div className="xxl:w-[422px] sm:w-[365px] xsm:w-[330px] xl:w-[400px] xxl:h-[396px] xl:h-[350px] bg-[#D9D9D93D] rounded-[12px] px-[30px] py-[30px]  xxl:space-y-[20px] sm:space-y-[20px] xl:space-y-[20px] ">
                                     <h1 className='xxl:w-[347px] xl:w-[320px] xl:h-[50px] xxl:h-[56px] satoshi font-[400] text-[18px] text-[#EEEEF06B] '><span className='text-[#B21888]'>Creating</span> and managing your courses has never been Simpler</h1>
-                                    <Input type='text' id='create' placeholder='Institution Name' style={{width: '100%', maxWidth:'347px', height: '56px', background: '#130425', borderColor : '#D9D9D93D', borderRadius: '12px', '@media(min-width: 768px)': {width:'300px'}}} className='smallInput satoshi xxl:h-[56px] xl:h-[50px] xxl:w-[350px] xl:w-[320px] rounded-[12px] text-[18px] xl:text-[14px] text-[#EEEEF06B] px-[20px]' onChange={handleName} value={institutionName} disabled={isExist ? true : false} />
+                                    <Input type='text' id='create' placeholder='Institution Name' style={{width: '100%', maxWidth:'347px', height: '56px', background: '#130425', borderColor : '#D9D9D93D', borderRadius: '12px', '@media(minWidth: 768px)': {width:'300px'}}} className='smallInput satoshi xxl:h-[56px] xl:h-[50px] xxl:w-[350px] xl:w-[320px] rounded-[12px] text-[18px] xl:text-[14px] text-[#EEEEF06B] px-[20px]' onChange={handleName} value={institutionName} disabled={isExist ? true : false} />
                                     <Input type='number' id='courseDuration' placeholder='Course Duration' style={{width: '100%', maxWidth:'347px', height: '56px', background: '#130425', borderColor : '#D9D9D93D', borderRadius: '12px'}} className='bg-[#130425] satoshi xxl:h-[56px] xl:h-[50px] xxl:w-[350px] xl:w-[320px] rounded-[12px] text-[18px] xl:text-[14px] text-[#EEEEF06B] px-[20px]' onChange={handleDuration} value={duration} disabled={isExist ? true : false} />
                                    <Link href={creationStatData ? '/dashboard' : '#createAccount'}><Button onClick={handleCreateButton} className=' mt-[30px] xxl:w-[350px] xl:w-[320px] text-[18px] xxl:h-[56px] rounded-[12px]  px-[24px] py-[16px] xl:text-[14px]' style={{background : "linear-gradient(180deg, #B21888 0%, #4C32C3 100%),linear-gradient(0deg, #C4C4C4, #C4C4C4)", color: '#EEEEF0', height: '56px', borderRadius: '12px'}}>{isExist ? "Proceed to dashboard" : "Create Account"}</Button></Link> 
                            </div> 

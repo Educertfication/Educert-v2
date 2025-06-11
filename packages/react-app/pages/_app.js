@@ -11,7 +11,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 
 
 
-const projectId = '2afb2469942b2b96b36433a184c88bb5'; // get one at https://cloud.walletconnect.com/app;
+const projectId = 'fe92b14a8584c83e8f7e25c6e5deac12'; // get one at https://cloud.walletconnect.com/app;
 
 
 const { chains, publicClient } = configureChains(
@@ -23,7 +23,7 @@ const connectors = celoGroups({
     chains,
     projectId,
     appName:
-        (typeof document === "object" && document.title) || "Your App Name",
+        (typeof document === "object" && document.title) || "educert",
 });
 
 const appInfo = {
