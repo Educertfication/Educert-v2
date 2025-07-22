@@ -1,96 +1,226 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import "./EIP712.sol";
 import "./ICert.sol";
+import "./CourseManager.sol";
 
-contract UserAccount is EIP712 {
-    struct institution{
-        string _name;
-        address _propietor;
-        uint _courseDuration;
-        uint certMinted;
+contract UserAccount {
+    struct Institution {
+        string name;
+        address proprietor;
+        uint256 courseDuration;
+        uint256 certMinted;
+        bool isActive;
     }
-    struct receipientDetails {
-        uint deadline;
-        uint certificateID;
-        bytes signature;
-        bool issueStatus;
-        bytes32 _digest;
-    }
+
     address public owner;
     address public NFTaddress;
-    mapping(address => institution)institutionProperties;
-    mapping(address => receipientDetails) private Evidence;
-    mapping(address => uint) private Nonces;
-    uint CertificateID;
+    address public courseManagerAddress;
+    Institution public institution;
 
-    event Mint (address to, uint id);
-    event Revoke(address from, uint id);
+    event CourseCreated(uint256 courseId, string name);
+    event CertificateIssuedForCourse(uint256 courseId, address student, uint256 certificateId);
+    event InstitutionUpdated(string name, uint256 courseDuration);
 
-    modifier onlyOwner(){
+    modifier onlyOwner() {
         require(msg.sender == owner, "Not owner");
         _;
     }
 
-    constructor(string memory name_, address propietor_, uint _duration, uint certificateID, address _nftAddress, address _owner) EIP712('Educational Certificate', '1'){
-        require(propietor_ != address(0), 'non-zero');
+    modifier onlyActiveInstitution() {
+        require(institution.isActive, "Institution not active");
+        _;
+    }
+
+    constructor(
+        string memory name_,
+        address proprietor_,
+        uint256 _duration,
+        address _nftAddress,
+        address _owner
+    ) {
+        require(proprietor_ != address(0), "Invalid proprietor address");
+        require(_nftAddress != address(0), "Invalid NFT address");
+        
         owner = _owner;
-        institutionProperties[owner] = institution(name_,propietor_,_duration, 0);
-        Nonces[msg.sender] = 0;
-        CertificateID = certificateID;
-         NFTaddress = _nftAddress;
+        NFTaddress = _nftAddress;
+        
+        institution = Institution({
+            name: name_,
+            proprietor: proprietor_,
+            courseDuration: _duration,
+            certMinted: 0,
+            isActive: true
+        });
     }
-  
-    //Offchain Signing.
-    function AppendSignature(bytes memory signature, address account, uint deadline) external onlyOwner{
-        bytes32 digest = _hashTypedDataV4(keccak256(abi.encode(
-            keccak256("MintCert(address owner,address recipient,uint256 certificateID,uint256 nonce,uint256 deadline)"),
-            owner,
-            account,
-            CertificateID,
-            Nonces[owner],
-            deadline
-        )));
-        address signer = ECDSA.recover(digest, signature);
-        require(signer == owner, "AppendSig: invalid signature");
-        require(signer != address(0), "ECDSA: invalid signature");
-        require(block.timestamp < deadline, "Deadline: signed transaction expired");
 
-        Nonces[owner]++;
-        ICert(NFTaddress).Mintcert(account,CertificateID, 1);
-        Evidence[account] = receipientDetails(deadline,CertificateID,signature, true, digest);
-        institutionProperties[owner].certMinted++;
-        emit Mint(account, CertificateID);
+    function setCourseManager(address _courseManagerAddress) external onlyOwner {
+        require(_courseManagerAddress != address(0), "Invalid address");
+        courseManagerAddress = _courseManagerAddress;
     }
-    function VerifySignature(address account)external view returns (bool) {
-        receipientDetails memory evidence = Evidence[account];
-        require(ICert(NFTaddress).balanceOf(account, evidence.certificateID) > 0, 'No certificate');
-        require(evidence.issueStatus == true, 'Not issuer');
-        bytes memory signature = evidence.signature;
-        bytes32 digest = evidence._digest;   
-        address signer = ECDSA.recover(digest, signature);
-        require(signer == owner, "AppendSig: invalid signer");
-        require(signer != address(0), "ECDSA: invalid signature");
-        return true;
+
+    function updateInstitution(string memory name_, uint256 _duration) external onlyOwner {
+        require(bytes(name_).length > 0, "Name cannot be empty");
+        require(_duration > 0, "Duration must be greater than 0");
+        
+        institution.name = name_;
+        institution.courseDuration = _duration;
+        
+        emit InstitutionUpdated(name_, _duration);
     }
-    function RevokeCertificate(address account) external onlyOwner returns (bool){
-        ICert(NFTaddress).Burn(account, Evidence[account].certificateID, 1);
-        Evidence[account] = receipientDetails(0,0,'0x0',false,0);
-        emit Revoke(account, Evidence[account].certificateID);
-        return true;
+
+    function deactivateInstitution() external onlyOwner {
+        institution.isActive = false;
     }
-    function TransferOwnership(address _newOwner) external onlyOwner{
+
+    function activateInstitution() external onlyOwner {
+        institution.isActive = true;
+    }
+
+    // Course Management Functions
+    function createCourse(
+        string memory name,
+        string memory description,
+        string memory courseUri,
+        uint256 price,
+        uint256 duration,
+        bool requiresAssessment
+    ) external onlyOwner onlyActiveInstitution returns (uint256) {
+        require(courseManagerAddress != address(0), "CourseManager not set");
+        require(bytes(name).length > 0, "Name cannot be empty");
+        require(duration > 0, "Duration must be greater than 0");
+        
+        uint256 courseId = CourseManager(courseManagerAddress).createCourse(
+            name, description, courseUri, price, duration, requiresAssessment
+        );
+        
+        emit CourseCreated(courseId, name);
+        return courseId;
+    }
+
+    function updateCourse(
+        uint256 courseId,
+        string memory name,
+        string memory description,
+        string memory courseUri,
+        uint256 price,
+        uint256 duration
+    ) external onlyOwner onlyActiveInstitution {
+        require(courseManagerAddress != address(0), "CourseManager not set");
+        require(bytes(name).length > 0, "Name cannot be empty");
+        require(duration > 0, "Duration must be greater than 0");
+        
+        CourseManager(courseManagerAddress).updateCourse(
+            courseId, name, description, courseUri, price, duration
+        );
+    }
+
+    function deactivateCourse(uint256 courseId) external onlyOwner onlyActiveInstitution {
+        require(courseManagerAddress != address(0), "CourseManager not set");
+        CourseManager(courseManagerAddress).deactivateCourse(courseId);
+    }
+
+    function activateCourse(uint256 courseId) external onlyOwner onlyActiveInstitution {
+        require(courseManagerAddress != address(0), "CourseManager not set");
+        CourseManager(courseManagerAddress).activateCourse(courseId);
+    }
+
+    function issueCertificateForCourse(uint256 courseId, address student) external onlyOwner onlyActiveInstitution {
+        require(courseManagerAddress != address(0), "CourseManager not set");
+        require(student != address(0), "Invalid student address");
+        
+        // Call CourseManager to update enrollment state and verify course creator
+        CourseManager(courseManagerAddress).issueCertificate(courseId, student);
+        
+        // Get the certificate ID for this course
+        CourseManager.Course memory course = CourseManager(courseManagerAddress).getCourse(courseId);
+        
+        // Mint the certificate NFT
+        ICert(NFTaddress).Mintcert(student, course.certificateId, 1);
+        
+        // Update institution stats
+        institution.certMinted++;
+        
+        emit CertificateIssuedForCourse(courseId, student, course.certificateId);
+    }
+
+    function revokeCertificate(uint256 courseId, address student) external onlyOwner onlyActiveInstitution {
+        require(courseManagerAddress != address(0), "CourseManager not set");
+        require(student != address(0), "Invalid student address");
+        
+        // Get the certificate ID for this course
+        CourseManager.Course memory course = CourseManager(courseManagerAddress).getCourse(courseId);
+        
+        // Burn the certificate NFT
+        ICert(NFTaddress).Burn(student, course.certificateId, 1);
+        
+        // Update institution stats
+        if (institution.certMinted > 0) {
+            institution.certMinted--;
+        }
+    }
+
+    function transferOwnership(address _newOwner) external onlyOwner {
+        require(_newOwner != address(0), "Invalid new owner");
+        require(_newOwner != owner, "Same owner");
+        
         owner = _newOwner;
+        institution.proprietor = _newOwner;
     }
 
-    function Institution() view public returns(institution memory) {
-        return institutionProperties[owner];
+    // Read Functions for Course Management
+    function getCourse(uint256 courseId) external view returns (CourseManager.Course memory) {
+        require(courseManagerAddress != address(0), "CourseManager not set");
+        return CourseManager(courseManagerAddress).getCourse(courseId);
     }
-    function id() external view returns(uint){
-        return CertificateID;
+
+    function getInstitutionCourses() external view returns (uint256[] memory) {
+        require(courseManagerAddress != address(0), "CourseManager not set");
+        return CourseManager(courseManagerAddress).getCreatorCourses(owner);
     }
-     function nonce() external view returns(uint){
-        return Nonces[owner];
+
+    function getCourseStudents(uint256 courseId) external view returns (address[] memory) {
+        require(courseManagerAddress != address(0), "CourseManager not set");
+        return CourseManager(courseManagerAddress).getCourseStudents(courseId);
+    }
+
+    function getStudentEnrollment(address student, uint256 courseId) external view returns (CourseManager.Enrollment memory) {
+        require(courseManagerAddress != address(0), "CourseManager not set");
+        return CourseManager(courseManagerAddress).getEnrollment(student, courseId);
+    }
+
+    function isStudentEnrolled(address student, uint256 courseId) external view returns (bool) {
+        require(courseManagerAddress != address(0), "CourseManager not set");
+        return CourseManager(courseManagerAddress).isEnrolled(student, courseId);
+    }
+
+    function hasStudentCompleted(address student, uint256 courseId) external view returns (bool) {
+        require(courseManagerAddress != address(0), "CourseManager not set");
+        return CourseManager(courseManagerAddress).hasCompleted(student, courseId);
+    }
+
+    function hasStudentCertificate(address student, uint256 courseId) external view returns (bool) {
+        require(courseManagerAddress != address(0), "CourseManager not set");
+        return CourseManager(courseManagerAddress).hasCertificate(student, courseId);
+    }
+
+    function getActiveCourses() external view returns (CourseManager.Course[] memory) {
+        require(courseManagerAddress != address(0), "CourseManager not set");
+        return CourseManager(courseManagerAddress).getActiveCourses();
+    }
+
+    // Institution-specific functions
+    function getInstitution() external view returns (Institution memory) {
+        return institution;
+    }
+
+    function getInstitutionStats() external view returns (uint256 totalCourses, uint256 totalCertificates) {
+        require(courseManagerAddress != address(0), "CourseManager not set");
+        
+        uint256[] memory courses = CourseManager(courseManagerAddress).getCreatorCourses(address(this));
+        totalCourses = courses.length;
+        totalCertificates = institution.certMinted;
+        
+        return (totalCourses, totalCertificates);
     }
 }
