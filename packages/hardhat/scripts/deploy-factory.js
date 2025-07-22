@@ -18,70 +18,50 @@ async function main() {
   const nftAddress = nft.address;
   console.log("Certificate contract deployed to:", nftAddress);
 
+  // Deploy the CourseManager contract
+  console.log("Deploying CourseManager contract...");
+  const CourseManager = await ethers.getContractFactory("CourseManager");
+  const courseManager = await CourseManager.deploy(
+    ethers.constants.AddressZero, // Will be set after factory deployment
+    nftAddress,
+    deployer.address // Initial owner
+  );
+  await courseManager.deployed();
+  const courseManagerAddress = courseManager.address;
+  console.log("CourseManager deployed to:", courseManagerAddress);
+
   // Deploy the AccountFactory contract
   console.log("Deploying AccountFactory contract...");
   const AccountFactory = await ethers.getContractFactory("AccountFactory");
-  const factory = await AccountFactory.deploy(deployer.address); // Set deployer as initial owner
+  const factory = await AccountFactory.deploy(nftAddress);
   await factory.deployed();
   const factoryAddress = factory.address;
   console.log("AccountFactory deployed to:", factoryAddress);
 
-  // Set the certificate contract in the factory
-  console.log("Setting certificate contract in factory...");
-  await factory.setCertificateContract(nftAddress);
-  console.log("Certificate contract set in factory");
+  // Set up contract integrations
+  console.log("Setting up contract integrations...");
+  
+  // Set the factory address in CourseManager
+  await courseManager.setFactoryAddress(factoryAddress);
+  console.log("Factory address set in CourseManager");
 
-  // Initialize the Certificate contract with the factory address
-  console.log("Initializing Certificate contract with factory address...");
-  await nft.initializeFactory(factoryAddress);
-  console.log("Certificate contract initialized with factory address");
+  // Set the CourseManager address in AccountFactory
+  await factory.setCourseManager(courseManagerAddress);
+  console.log("CourseManager address set in AccountFactory");
 
-  // Test account creation (optional)
-  console.log("\nTesting account creation...");
-  try {
-    const tx = await factory.createAccount("Test Account", "Student");
-    await tx.wait();
-    console.log("Test account created successfully!");
-  } catch (error) {
-    console.log("Test account creation failed:", error.message);
-  }
+  // Authorize the deployer as a creator in CourseManager
+  console.log("Authorizing deployer as creator...");
+  await courseManager.authorizeCreator(deployer.address, "Platform Admin");
+  console.log("Deployer authorized as creator");
 
-  // Verify the contracts on Celo Explorer
-  console.log("\nWaiting for block confirmations...");
-  await new Promise(resolve => setTimeout(resolve, 30000)); // Wait 30 seconds
-
-  console.log("Verifying Certificate contract...");
-  try {
-    await hre.run("verify:verify", {
-      address: nftAddress,
-      constructorArguments: [
-        "https://educert.com/api/metadata/",
-        deployer.address
-      ],
-    });
-  } catch (error) {
-    console.log("Certificate verification failed:", error);
-  }
-
-  console.log("Verifying AccountFactory contract...");
-  try {
-    await hre.run("verify:verify", {
-      address: factoryAddress,
-      constructorArguments: [deployer.address],
-    });
-  } catch (error) {
-    console.log("AccountFactory verification failed:", error);
-  }
-
-  console.log("\nDeployment Summary:");
-  console.log("-------------------");
+  console.log("\n=== Deployment Summary ===");
   console.log("Certificate Contract:", nftAddress);
+  console.log("CourseManager Contract:", courseManagerAddress);
   console.log("AccountFactory Contract:", factoryAddress);
-  console.log("\nImportant Notes:");
-  console.log("1. Anyone can create an account using the createAccount function");
-  console.log("2. Each address can only create one account");
-  console.log("3. Account creation requires a name and role");
-  console.log("\nDeployment completed successfully!");
+  console.log("Deployer Address:", deployer.address);
+  console.log("========================\n");
+
+  console.log("All contracts deployed and configured successfully!");
 }
 
 main()
