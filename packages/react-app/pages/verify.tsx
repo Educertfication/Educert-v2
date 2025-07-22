@@ -83,6 +83,7 @@ export default function VerifyCertificate() {
   const [loading, setLoading] = useState(false);
   const [verificationResult, setVerificationResult] = useState<VerificationResult | null>(null);
   const [isDemoMode, setIsDemoMode] = useState(false);
+  const [verificationCount, setVerificationCount] = useState(0); // Track verification attempts
 
   // Load institutions on component mount
   useEffect(() => {
@@ -279,6 +280,10 @@ export default function VerifyCertificate() {
     
     setLoading(true);
     try {
+      // For demo purposes, we'll randomize the result
+      // In production, this would call the actual smart contract
+      
+      /*
       const provider = new ethers.providers.JsonRpcProvider(
         'https://alfajores-forno.celo-testnet.org'
       );
@@ -313,23 +318,61 @@ export default function VerifyCertificate() {
         course: selectedCourseData?.name || 'Unknown Course',
         studentAddress
       };
+      */
+      
+      // Demo mode: Switch between enrolled and not enrolled
+      
+      // Increment verification count and use it to alternate results
+      const newCount = verificationCount + 1;
+      setVerificationCount(newCount);
+      
+      const isEnrolled = newCount % 2 === 1; // Odd count = enrolled, even count = not enrolled (so 1=enrolled, 2=not enrolled, 3=enrolled, etc.)
+      const hasCertificate = isEnrolled && newCount % 3 === 0; // Every 3rd enrolled attempt has certificate
+      const isCompleted = isEnrolled && newCount % 4 === 0; // Every 4th enrolled attempt is completed
+      
+      console.log('Demo verification:', { newCount, isEnrolled, hasCertificate, isCompleted });
+      
+      const selectedInstitutionData = institutions.find(inst => inst.accountAddress === selectedInstitution);
+      const selectedCourseData = courses.find(course => course.courseId === parseInt(selectedCourse));
+      
+      const result: VerificationResult = {
+        isEnrolled,
+        enrollment: isEnrolled ? {
+          student: studentAddress,
+          courseId: parseInt(selectedCourse),
+          enrolledAt: Math.floor(Date.now() / 1000) - 86400 * Math.floor(Math.random() * 90 + 30), // 30-120 days ago
+          isCompleted,
+          certificateIssued: hasCertificate,
+          completedAt: isCompleted ? Math.floor(Date.now() / 1000) - 86400 * Math.floor(Math.random() * 30 + 1) : 0 // 1-30 days ago if completed
+        } : undefined,
+        hasCertificate,
+        institution: selectedInstitutionData?.name || 'Demo Institution',
+        course: selectedCourseData?.name || 'Demo Course',
+        studentAddress
+      };
       
       setVerificationResult(result);
     } catch (error) {
       console.error('Verification failed:', error);
       
-      // Show demo verification result
+      // Fallback demo verification result
+      const newCount = verificationCount + 1;
+      setVerificationCount(newCount);
+      const isEnrolled = newCount % 2 === 1; // Odd count = enrolled, even count = not enrolled
+      
+      console.log('Fallback demo verification:', { newCount, isEnrolled });
+      
       const demoResult: VerificationResult = {
-        isEnrolled: true,
-        enrollment: {
+        isEnrolled,
+        enrollment: isEnrolled ? {
           student: studentAddress,
           courseId: parseInt(selectedCourse),
           enrolledAt: Math.floor(Date.now() / 1000) - 86400 * 30, // 30 days ago
           isCompleted: true,
           certificateIssued: true,
           completedAt: Math.floor(Date.now() / 1000) - 86400 * 5 // 5 days ago
-        },
-        hasCertificate: true,
+        } : undefined,
+        hasCertificate: isEnrolled,
         institution: institutions.find(inst => inst.accountAddress === selectedInstitution)?.name || 'Demo Institution',
         course: courses.find(course => course.courseId === parseInt(selectedCourse))?.name || 'Demo Course',
         studentAddress
@@ -363,13 +406,14 @@ export default function VerifyCertificate() {
             Verify the authenticity of educational certificates on the blockchain. 
             Select an institution, course, and enter student address to check enrollment and certificate status.
           </p>
-          {isDemoMode && (
-            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md inline-block">
-              <p className="text-sm text-yellow-800">
-                🧪 Demo Mode - Showing test data for demonstration purposes
-              </p>
-            </div>
-          )}
+          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg inline-block max-w-2xl">
+            <p className="text-sm text-blue-800 font-medium">
+              🎲 Demo Mode - Results alternate between &ldquo;Enrolled&rdquo; and &ldquo;Not Enrolled&rdquo;
+            </p>
+            <p className="text-xs text-blue-600 mt-1">
+              Verification #{verificationCount + 1}: {(verificationCount + 1) % 2 === 1 ? 'Will show Enrolled' : 'Will show Not Enrolled'}
+            </p>
+          </div>
         </div>
 
         {/* Verification Form */}
