@@ -1,140 +1,140 @@
-import { Disclosure } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import Image from "next/image";
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useContractRead, useAccount } from 'wagmi'
-import factoryabi from '../pages/utils/factory.json';
-import { useRouter } from 'next/router';
-import Loading from '../pages/components/Loading'
+import React from 'react'
+import Link from 'next/link'
+import { useUser } from '../lib/store'
+import { Button } from './ui/button'
+import { 
+  GraduationCap, 
+  Menu, 
+  X,
+  User,
+  Building2,
+  BookOpen,
+  Shield
+} from 'lucide-react'
+import { cn } from '../lib/utils'
+import { usePrivyAuth } from '../lib/usePrivyAuth'
 
+interface HeaderProps {
+  className?: string
+}
 
-export default function Header(prop : any) {
-  const [isExist, setIsExist] = useState(false);
-  const [popOpen, setPopOpen] = useState(false);
-  const router = useRouter();
-  const [isPageLoading, setIsLoading] = useState(router.isFallback);
+const Header: React.FC<HeaderProps> = ({ className }) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
+  const user = useUser()
+  const { ready, authenticated, login, logout, privyUser } = usePrivyAuth()
 
-  const {address} = useAccount()
-  const { data: creationStatData, isError, isLoading, isFetched } = useContractRead({
-    address: '0x504195e2a73A2Cd0f3c691e49ADC93E509cFdA79',
-    abi: factoryabi,
-    functionName: 'CreationStatus',
-    args: [address],
-  })
+  const navigation = [
+    { name: 'Home', href: '/', icon: GraduationCap },
+    { name: 'Courses', href: '/courses', icon: BookOpen },
+    { name: 'Verify Certificate', href: '/verify', icon: Shield },
+    ...(user.type === 'institution' ? [
+      { name: 'Institution Dashboard', href: '/institution', icon: Building2 }
+    ] : []),
+    ...(user.type === 'student' ? [
+      { name: 'Student Dashboard', href: '/student', icon: User }
+    ] : []),
+    ...(user.type === 'admin' ? [
+      { name: 'Admin', href: '/admin', icon: User }
+    ] : []),
+  ]
 
-  const handlepop = () =>{
-    setPopOpen(!popOpen);
-  }
+  // console.log("user", user)
+  // console.log("privyUser", privyUser)
 
-  useEffect(() => {
-    if(isFetched){
-      //@ts-ignore
-      setIsExist(creationStatData)
-    }
-    const handleRouteChangeStart = () => {
-      setIsLoading(true);
-    };
-
-    const handleRouteChangeComplete = () => {
-      setIsLoading(false);
-    };
-
-    router.events.on('routeChangeStart', handleRouteChangeStart);
-    router.events.on('routeChangeComplete', handleRouteChangeComplete);
-
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChangeStart);
-      router.events.off('routeChangeComplete', handleRouteChangeComplete);
-    };
-    
-  }, [creationStatData, isFetched])
-  
-  if (isPageLoading) {
-    return <Loading />
-  }
-  const handleownershipDialog = () =>{
-    prop.dialog();
-    setPopOpen(false);
-  }
-  const handlerevokeDialog = () =>{
-    prop.dialog2();
-    setPopOpen(false);
-  }
-  
-    return (
-      <Disclosure as="nav" className="border-none mt-[20px]">
-        {({ open }) => (
-          <>
-            <div className="mx-auto xl:w-[1100px] xxl:w-[1380px] md:w-[500px] px-2 sm:px-6 lg:px-8">
-              <div className="relative flex h-16 justify-between">
-                <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                  {/* Mobile menu button */}
-                  {/* <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-black focus:outline-none focus:ring-1 focus:ring-inset focus:rounded-none focus:ring-black">
-                    <span className="sr-only">Open main menu</span>
-                    {open ? (
-                      <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                    ) : (
-                      <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                    )}
-                  </Disclosure.Button> */}
-                </div>
-                <div className="absolute xxl:h-[100px] xxl:w-[754px]">
-                  <Image src="/topleft.png" alt="topleft" width={100} height={100} className=" opacity-10 z-0" id='verify' unoptimized />
-                </div>
-                <div className="absolute top-28 xxl:h-[100px] xxl:w-[754px]">
-                  <Image src="/leftcorner.png" alt="topleft" width={100} height={100} className=" opacity-10 z-0 " unoptimized />
-                </div>
-              
-                <div className="flex flex-1 items-center sm:items-stretch sm:justify-start space-x-8 relative z-10">
-                  <div className="flex flex-shrink-0 items-center space-x-2">
-                    <Image className="block sm:block lg:block" src="/logo.png" width={45} height={45} alt="educert Logo" unoptimized />
-                    <h1 className="text-[30px] font-[700] text-[#FFFFFF] satoshi">Edu<span className="text-[#EC27B6]">Cert</span></h1>
-                  </div>
-                  {!prop.status && <Link href='/'><h1 className="text-[#FFFFFF] satoshi">Home</h1></Link>}
-                 
-                </div>
-                <div className="absolute xl:space-x-6 xxl:space-x-10 inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                 {prop.status && <>
-                  <Link href={isExist ? '/dashboard' : '#createAccount'} >
-                  <h1 className="sm:hidden relative z-10 text-[14px] xxl:text-[18px] xxl:w-[350] font-[400] h-[20px] xl:w-[120px] text-[#EEEEF0] satoshi">{isExist ? "Dashboard":"Create Account"}</h1>
-                  </Link>
-                  <Link href="#Aboutus"><h1 className=" sm:hidden relative z-10 text-[14px] xxl:text-[18px] xxl:w-[350] font-[400] h-[20px] xl:w-[89px] text-[#EEEEF0] satoshi">About Us</h1></Link>
-                  </>}
-                {!prop.status && <Image src="/profile.png" alt='profile' width={32} height={32} onClick={handlepop} className="relative z-10 cursor-pointer" unoptimized />}
-                <div className="relative z-10">
-                <ConnectButton chainStatus="none"  showBalance={{smallScreen: true, largeScreen: false}}/>
-                </div>
-                </div>
-               {popOpen && <div className='w-[245px] h-[104px] bg-[#A9A9A970] rounded-[8px] border-[1px] mr-[150px] mt-[70px] text-center'> 
-                    <h1  className='w-[167px] my-[20px] h-[22px] satoshi font-[400] text-[16px] text-[#EEEEF06B] border-b-[2px] mx-auto cursor-pointer' onClick={handleownershipDialog} >Transfer Ownership</h1>             
-                    <h1  className='w-[167px] my-[20px] h-[22px] satoshi font-[400] text-[16px] text-[#EEEEF06B] border-b-[2px] mx-auto cursor-pointer' onClick={handlerevokeDialog}>Revoke Certificate</h1>             
-                </div>}
+  return (
+    <header className={cn("bg-white border-b border-gray-200 sticky top-0 z-50", className)}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-accent-500 rounded-lg flex items-center justify-center">
+                <GraduationCap className="w-5 h-5 text-white" />
               </div>
-            </div>
-  
-            <Disclosure.Panel className="sm:hidden">
-              <div className="space-y-1 pt-2 pb-4">
-                <Disclosure.Button
-                  as="a"
-                  href="#"
-                  className="block border-l-4 border-black py-2 pl-3 pr-4 text-base font-medium text-black"
-                >
-                  Home
-                </Disclosure.Button>
-                {/* Add here your custom menu elements */}
-              </div>
-            </Disclosure.Panel>
-          </>
+              <span className="text-xl font-bold text-gray-900">EduCert</span>
+            </Link>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex space-x-8">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="flex items-center space-x-1 text-gray-600 hover:text-primary-600 transition-colors"
+              >
+                <item.icon className="w-4 h-4" />
+                <span>{item.name}</span>
+              </Link>
+            ))}
+          </nav>
+
+          {/* Wallet Connection */}
+          <div className="flex items-center space-x-4">
+            
+          {ready && authenticated ? (
+          <div className="flex items-center space-x-2">
+            {/* {user.email && (
+              <span className="text-sm text-gray-600 hidden sm:block">
+                {user.email}
+              </span>
+            )} */}
+            <Link href="/profile">
+              <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+                <User className="w-4 h-4" />
+                <span className="hidden sm:inline">Profile</span>
+              </Button>
+            </Link>
+            <Button onClick={logout} variant="outline"
+              size="sm"
+              className="flex items-center space-x-2">
+              Log Out
+            </Button>
+          </div>
+        ) : (
+          <Button onClick={login} variant="outline"
+          size="sm"
+          className="flex items-center space-x-2">Log In</Button>
         )}
+            
+            {/* Mobile menu button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
+            </Button>
+          </div>
+        </div>
+      </div>
 
-      </Disclosure>
-    )
-  }
+      {/* Mobile Navigation */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-primary-600 hover:bg-gray-50 rounded-md transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <item.icon className="w-4 h-4" />
+                <span>{item.name}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </header>
+  )
+}
 
-
-
-  
-              
+export default Header
        
