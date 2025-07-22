@@ -1,0 +1,70 @@
+{
+  "networks": {
+    "localhost": {
+      "description": "Local development network",
+      "contracts": {}
+    },
+    "hardhat": {
+      "description": "Hardhat local network",
+      "contracts": {}
+    },
+    "celo": {
+      "description": "Celo mainnet",
+      "contracts": {}
+    },
+    "alfajores": {
+      "description": "Celo testnet (Alfajores)",
+      "contracts": {}
+    },
+    "celo-alfajores": {
+      "description": "celo-alfajores network",
+      "contracts": {
+        "Certificate": "0xA2efe1AC0aA3b2fCb53CCC9b2d110855F79415A5",
+        "AccountFactory": "0x6ae719435cAc9003bf49f4107d8a7C65F7E1e810",
+        "CourseManager": "0x360977e8eBe61af2Bbc2937FAE2F0297Ee8C6ad5",
+        "SampleInstitutionAccount": "0xaDAf107B49f360960b18Ad6DAC128fA81aB65091",
+        "SampleCourseId": "1"
+      },
+      "deployedAt": "2025-07-20T11:00:06.203Z"
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "description": "Educert v2 - Decentralized Certificate Verification Platform",
+    "contracts": {
+      "Certificate": {
+        "description": "ERC1155 non-transferable certificate NFTs",
+        "features": [
+          "NFT minting",
+          "Non-transferable",
+          "Factory integration"
+        ]
+      },
+      "AccountFactory": {
+        "description": "Factory for creating institution accounts",
+        "features": [
+          "Account creation",
+          "CourseManager integration",
+          "Certificate integration"
+        ]
+      },
+      "CourseManager": {
+        "description": "Course management and certificate issuance",
+        "features": [
+          "Course CRUD",
+          "Enrollment management",
+          "Completion tracking",
+          "Certificate issuance"
+        ]
+      },
+      "UserAccount": {
+        "description": "Institution account with course management capabilities",
+        "features": [
+          "Course creation",
+          "Certificate issuance",
+          "EIP712 signing"
+        ]
+      }
+    }
+  }
+}
