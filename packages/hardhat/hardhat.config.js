@@ -1,6 +1,7 @@
 require("dotenv").config({ path: ".env" });
 require("hardhat-deploy");
 require("@nomiclabs/hardhat-ethers");
+require("@nomicfoundation/hardhat-chai-matchers");
 // require("hardhat-celo"); // Removed to fix verify task conflict
 require("@nomicfoundation/hardhat-verify");
 
@@ -22,7 +23,7 @@ module.exports = {
     },
     'celo-alfajores': {
       url: "https://alfajores-forno.celo-testnet.org",
-      accounts: [process.env.PRIVATE_KEY],
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 44787,
     },
     celo: {
