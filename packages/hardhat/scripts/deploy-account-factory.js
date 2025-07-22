@@ -29,7 +29,7 @@ async function main() {
   }
 
   // If you have already deployed the Certificate contract, you can set it here
-  const certificateAddress = "0xB31c2fa3491795EE57c471DcfDFef4B932d93C55"; // Replace with your Certificate contract address
+  const certificateAddress = "0x24e28b500721E4adC5A9dabF8EFE3aD991812ad2"; // Certificate contract address from deployments.json
   console.log("Setting Certificate contract address:", certificateAddress);
   
   const tx = await factory.setCertificateContract(certificateAddress);
