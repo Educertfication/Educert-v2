@@ -16,7 +16,7 @@ async function main() {
     deployer.address,      // propietor_
     365,                   // _duration (in days)
     1,                     // certificateID (starting from 1)
-    "0x73bb8f35F79e7472Af9E5657e8DCD15b22E8B7C6", // _nftAddress (Certificate contract)
+    "0x24e28b500721E4adC5A9dabF8EFE3aD991812ad2", // _nftAddress (Certificate contract from deployments.json)
     deployer.address       // _owner
   );
 
@@ -39,7 +39,7 @@ async function main() {
         deployer.address,
         365,
         1,
-        "0x73bb8f35F79e7472Af9E5657e8DCD15b22E8B7C6",
+        "0x24e28b500721E4adC5A9dabF8EFE3aD991812ad2",
         deployer.address
       ],
     });
